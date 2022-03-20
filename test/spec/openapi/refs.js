@@ -162,3 +162,96 @@ test('support nested $ref schema : complex case without modifying buildLocalRefe
 
   await Swagger.validate(openapiObject)
 })
+
+test('Support allOf with $ref in query', async (t) => {
+  const fastify = Fastify()
+  fastify.register(fastifySwagger, {
+    openapi: true,
+    routePrefix: '/docs',
+    exposeRoute: true
+  })
+  fastify.addSchema({ $id: 'testschema', type: 'object', properties: { test: { type: 'string' } } })
+  fastify.get('/', { schema: { querystring: { allOf: [{ $ref: 'testschema#' }], properties: { newtest: { type: 'string' } } } } }, () => {})
+  await fastify.ready()
+
+  const swaggerObject = fastify.swagger()
+  const api = await Swagger.validate(swaggerObject)
+
+  const definedPath = api.paths['/'].get
+  t.same(definedPath.parameters, [
+    {
+      in: 'query',
+      name: 'test',
+      required: false,
+      schema: { type: 'string' }
+    },
+    {
+      in: 'query',
+      name: 'newtest',
+      required: false,
+      schema: { type: 'string' }
+    }
+  ])
+})
+
+test('Support oneOf with $ref in query', async (t) => {
+  const fastify = Fastify()
+  fastify.register(fastifySwagger, {
+    openapi: true,
+    routePrefix: '/docs',
+    exposeRoute: true
+  })
+  fastify.addSchema({ $id: 'testschema', type: 'object', properties: { test: { type: 'string' } } })
+  fastify.get('/', { schema: { querystring: { oneOf: [{ $ref: 'testschema#' }], properties: { newtest: { type: 'string' } } } } }, () => {})
+  await fastify.ready()
+
+  const swaggerObject = fastify.swagger()
+  const api = await Swagger.validate(swaggerObject)
+
+  const definedPath = api.paths['/'].get
+  t.same(definedPath.parameters, [
+    {
+      in: 'query',
+      name: 'test',
+      required: false,
+      schema: { type: 'string' }
+    },
+    {
+      in: 'query',
+      name: 'newtest',
+      required: false,
+      schema: { type: 'string' }
+    }
+  ])
+})
+
+test('Support anyOf with $ref in query', async (t) => {
+  const fastify = Fastify()
+  fastify.register(fastifySwagger, {
+    openapi: true,
+    routePrefix: '/docs',
+    exposeRoute: true
+  })
+  fastify.addSchema({ $id: 'testschema', type: 'object', properties: { test: { type: 'string' } } })
+  fastify.get('/', { schema: { querystring: { anyOf: [{ $ref: 'testschema#' }], properties: { newtest: { type: 'string' } } } } }, () => {})
+  await fastify.ready()
+
+  const swaggerObject = fastify.swagger()
+  const api = await Swagger.validate(swaggerObject)
+
+  const definedPath = api.paths['/'].get
+  t.same(definedPath.parameters, [
+    {
+      in: 'query',
+      name: 'test',
+      required: false,
+      schema: { type: 'string' }
+    },
+    {
+      in: 'query',
+      name: 'newtest',
+      required: false,
+      schema: { type: 'string' }
+    }
+  ])
+})
