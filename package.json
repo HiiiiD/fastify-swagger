@@ -15,7 +15,7 @@
     "unit": "tap -J \"test/**/*.js\"",
     "unit:report": "npm run unit -- --coverage-report=html",
     "unit:verbose": "npm run unit -- -Rspec",
-    "postinstall": "npm run prepare"
+    "postinstall": "npm i && npm run prepare"
   },
   "repository": {
     "type": "git",
