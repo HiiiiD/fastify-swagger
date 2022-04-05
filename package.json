@@ -14,7 +14,8 @@
     "typescript": "tsd",
     "unit": "tap -J \"test/**/*.js\"",
     "unit:report": "npm run unit -- --coverage-report=html",
-    "unit:verbose": "npm run unit -- -Rspec"
+    "unit:verbose": "npm run unit -- -Rspec",
+    "postinstall": "prepare"
   },
   "repository": {
     "type": "git",
